@@ -13,16 +13,8 @@ import tensorflow as tf
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-def trainModel(modelGetter, input_train, output_train, numEpoch):
-    model = modelGetter(50)
-    model.compile(optimizer='adam', loss='SparseCategoricalCrossentropy', metrics=['accuracy'])
-    return model.fit(x_train, y_train, epochs=numEpoch).history['loss']
-
-def getModelTrainer(modelGetter, input_train, output_train, numEpoch):
-    return lambda: functools.partial(trainModel, modelGetter, input_train, output_train, numEpoch)()
-
 vEnv = dict()
-libs.importdir.do(r"C:\Users\maxim\Desktop\js\xornet\models", vEnv)
+libs.importdir.do(r"C:\Users\maxim\Desktop\js\xornet\modelsA", vEnv)
 
 mnist = tf.keras.datasets.mnist
 
@@ -41,14 +33,13 @@ VIEW = "accuracy" #loss
 
 for modelName, modelModule in libs.ConfidenceInterval.tqdmProgress(list(vEnv.items()), False):
     print("\nEval Model: " + str(modelName))
-    trainer = getModelTrainer(modelModule.GetModel, x_train, y_train, NUM_EPOCH)
     start = time.time()
     multiSampleTrain = np.zeros((NUM_EVALS, NUM_EPOCH))
     multiSampleVal = np.zeros((NUM_EVALS, NUM_EPOCH))
     for i in libs.ConfidenceInterval.tqdmProgress(range(NUM_EVALS), False):
-        model = modelModule.GetModel()
+        model = modelModule.GetModel(1)
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-        historyObj = model.fit(x_train, y_train, epochs=NUM_EPOCH, verbose=1, use_multiprocessing=True, validation_data=(x_test, y_test), batch_size=50)
+        historyObj = model.fit(x_train, y_train, epochs=NUM_EPOCH, verbose=1, use_multiprocessing=True, validation_data=(x_test, y_test), batch_size=128)
         
         multiSampleTrain[i] = historyObj.history[VIEW]
         multiSampleVal[i] = historyObj.history['val_' + VIEW]

@@ -3,7 +3,7 @@ import tensorflow.keras as keras
 
 import sys
 sys.path.append(r'C:\Users\maxim\Desktop\js\xornet')
-from andlayer import ANDLayer
+from customLayers.xorlayer import XORLayer
 
 def GetModel(n=10):
     model = keras.Sequential()
@@ -14,7 +14,7 @@ def GetModel(n=10):
     # model.add(tf.keras.layers.Dense(10))
     
     model.add(tf.keras.layers.Flatten(input_shape=(28, 28)))
-    model.add(ANDLayer(n))
+    model.add(XORLayer(n))
     model.add(tf.keras.layers.Dense(10, activation='softmax'))
 
     #model.build(input_shape = [28, 28])

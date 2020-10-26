@@ -1,5 +1,5 @@
 import tensorflow as tf
-from xorlayer import XORLayer
+from customLayers.xorlayer import XORLayer
 
 mnist = tf.keras.datasets.mnist
 

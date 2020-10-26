@@ -21,4 +21,9 @@ class ANDLayer(tf.keras.layers.Layer):
         # xVals = tf.matmul(inputs, self.weightA)
         # yVals = tf.matmul(inputs, self.weightB)
         # return xVals * yVals
-        return tf.matmul(inputs + self.bias, self.weightA) * tf.matmul(inputs + self.bias, self.weightB)
+        #return ((inputs + self.bias) @ self.weightA) * ((inputs + self.bias) @ self.weightB)
+        
+        if self.use_bias: biased = inputs + self.bias
+        else: biased = inputs
+
+        return (biased @ self.weightA) * (biased @ self.weightB)
