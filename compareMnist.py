@@ -32,22 +32,24 @@ VIEW = "accuracy" #loss
 # CROSS_POINTS = []
 
 for modelName, modelModule in libs.ConfidenceInterval.tqdmProgress(list(vEnv.items()), False):
+    if modelName in ["xornet"]: continue
     print("\nEval Model: " + str(modelName))
     start = time.time()
     multiSampleTrain = np.zeros((NUM_EVALS, NUM_EPOCH))
     multiSampleVal = np.zeros((NUM_EVALS, NUM_EPOCH))
     for i in libs.ConfidenceInterval.tqdmProgress(range(NUM_EVALS), False):
-        model = modelModule.GetModel(1)
+        model = modelModule.GetModel(2)
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         historyObj = model.fit(x_train, y_train, epochs=NUM_EPOCH, verbose=1, use_multiprocessing=True, validation_data=(x_test, y_test), batch_size=128)
-        
+
         multiSampleTrain[i] = historyObj.history[VIEW]
         multiSampleVal[i] = historyObj.history['val_' + VIEW]
 
     end = time.time()
     ALL_TIME_DATA[modelName] = end - start
-    ALL_LOSS_DATA[modelName+"_train"] = [libs.ConfidenceInterval.generateMeanData(multiSampleTrain), libs.ConfidenceInterval.generateConfidenceInterval(multiSampleTrain)]
-    ALL_LOSS_DATA[modelName+"_acc"] = [libs.ConfidenceInterval.generateMeanData(multiSampleVal), libs.ConfidenceInterval.generateConfidenceInterval(multiSampleVal)]
+    #ALL_LOSS_DATA[modelName+"_train"] = [libs.ConfidenceInterval.generateMeanData(multiSampleTrain), libs.ConfidenceInterval.generateConfidenceInterval(multiSampleTrain)]
+    #ALL_LOSS_DATA[modelName+"_acc"] = [libs.ConfidenceInterval.generateMeanData(multiSampleVal), libs.ConfidenceInterval.generateConfidenceInterval(multiSampleVal)]
+    ALL_LOSS_DATA[modelName] = [libs.ConfidenceInterval.generateMeanData(multiSampleVal), libs.ConfidenceInterval.generateConfidenceInterval(multiSampleVal)]
 
 import matplotlib.pyplot as plt
 
@@ -59,6 +61,9 @@ for model_name, modelData in ALL_LOSS_DATA.items():
     plt.fill_between(x, (modelData[0] - modelData[1]), (modelData[0] + modelData[1]), color=plt.gca().lines[-1].get_color(), alpha=.2)
 
 plt.legend()
+
+plt.xlabel("Epochs")
+plt.ylabel("Validation Accuracy")
 
 plt.figure()
 

@@ -35,7 +35,7 @@ VIEW = "accuracy" #loss
 # CROSS_POINTS = []
 
 for modelName, modelModule in libs.ConfidenceInterval.tqdmProgress(list(vEnv.items()), False):
-    if modelName in ["xornet", "andnet"]: continue
+    if modelName in ["xornet", "andnet", "allAnd"]: continue
     print("\nEval Model: " + str(modelName))
     start = time.time()
     multiSampleTrain = np.zeros((NUM_EVALS, NUM_EPOCH))
