@@ -19,7 +19,6 @@ class XORLayer(tf.keras.layers.Layer):
         # https://math.stackexchange.com/questions/61556/how-to-represent-xor-of-two-decimal-numbers-with-arithmetic-operators
         # (x+y-x y) (1-x y)
         if self.use_bias: inputs = inputs + self.bias
-        #inputs = inputs + self.bias
 
         xVals = tf.matmul(inputs, self.weightA)
         yVals = tf.matmul(inputs, self.weightB)

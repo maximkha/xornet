@@ -36,6 +36,21 @@ ALL_TIME_DATA = dict()
 VIEW = "accuracy" #loss
 
 # CROSS_POINTS = []
+def model_train(features, labels):
+   # Define the GradientTape context
+   with tf.GradientTape() as tape:
+       # Get the probabilities
+       predictions = model(features)
+       # Calculate the loss
+       loss = loss_func(labels, predictions)
+   # Get the gradients
+   gradients = tape.gradient(loss, model.trainable_variables)
+   # Update the weights
+   optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+   # Update the loss and accuracy
+   train_loss(loss)
+   train_acc(labels, predictions)
 
 for modelName, modelModule in libs.ConfidenceInterval.tqdmProgress(list(vEnv.items())[::-1], False):
     if modelName in ["xornet", "andnet", "allAnd", "beta", "x_2net"]: continue

@@ -16,6 +16,7 @@ class ConvANDLayer(tf.keras.layers.Layer):
         if self.use_bias: self.bias = self.add_weight("bias", shape=[self.filters])
 
     def build(self, input_shape):
+        #There isn't anything that needs to know the input shape, maybe pass this to the convs but for now I won't do that
         pass
 
     @tf.function

@@ -1,9 +1,9 @@
 import tensorflow as tf
 import numpy as np
 
-class ANDLayer(tf.keras.layers.Layer):
+class NANDLayer(tf.keras.layers.Layer):
     def __init__(self, num_outputs, bias=True):
-        super(ANDLayer, self).__init__()
+        super(NANDLayer, self).__init__()
         self.num_outputs = num_outputs
         self.use_bias = bias
 
@@ -27,4 +27,4 @@ class ANDLayer(tf.keras.layers.Layer):
         else: biased = inputs
 
         #return (biased @ self.weightA)**2
-        return (biased @ self.weightA) * (biased @ self.weightB)
+        return (1-((biased @ self.weightA) * (biased @ self.weightB)))
